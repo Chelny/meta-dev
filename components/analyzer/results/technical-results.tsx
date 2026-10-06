@@ -24,6 +24,12 @@ export function TechnicalResults({
       />
 
       <TechnicalRow
+        label="Final URL"
+        value={technical.finalUrl}
+        status={Boolean(technical.finalUrl)}
+      />
+
+      <TechnicalRow
         label="Content type"
         value={technical.contentType}
         status={Boolean(technical.contentType)}

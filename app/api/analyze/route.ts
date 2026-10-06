@@ -48,8 +48,9 @@ export async function POST(request: Request) {
         status: page.status,
         contentType: page.contentType,
         contentLength: page.contentLength,
+        finalUrl: page.finalUrl,
       },
-      page.finalUrl,
+      url,
     );
 
     analysis.suggestions = generateSuggestions(analysis);
