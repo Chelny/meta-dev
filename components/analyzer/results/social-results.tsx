@@ -1,6 +1,7 @@
 "use client";
 
-import { AtSign, Share2 } from "lucide-react";
+import { useState } from "react";
+import { AtSign, Check, Copy, Share2 } from "lucide-react";
 import { AnalysisSection } from "@/components/analyzer/analysis-section";
 import { SocialPreview } from "@/components/analyzer/results/social-preview";
 import type { MetaValue, PageAnalysis } from "@/types/analysis";
@@ -71,19 +72,47 @@ function MetaRow({
   label: string;
   value: MetaValue;
 }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    if (!value.value) return;
+
+    await navigator.clipboard.writeText(value.value);
+    setCopied(true);
+
+    window.setTimeout(() => {
+      setCopied(false);
+    }, 1500);
+  }
+
   return (
     <div className="flex flex-col gap-2 border-t py-4 first:border-t-0 first:pt-0 last:pb-0 sm:flex-row sm:items-start sm:justify-between">
       <span className="text-sm font-medium">{label}</span>
 
-      <p
-        className={
-          value.exists
-            ? "max-w-xl wrap-break-word text-sm text-muted-foreground sm:text-right"
-            : "text-sm text-amber-600 dark:text-amber-400"
-        }
-      >
-        {value.exists ? value.value : "Not found"}
-      </p>
+      {value.exists ? (
+        <div className="flex min-w-0 items-center gap-2 sm:max-w-xl">
+          <p className="min-w-0 wrap-break-word text-sm text-muted-foreground sm:text-right">
+            {value.value}
+          </p>
+
+          <button
+            type="button"
+            onClick={() => void handleCopy()}
+            className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+            aria-label={`Copy ${label}`}
+          >
+            {copied ? (
+              <Check className="size-3.5" />
+            ) : (
+              <Copy className="size-3.5" />
+            )}
+          </button>
+        </div>
+      ) : (
+        <p className="text-sm text-amber-600 dark:text-amber-400">
+          Not found
+        </p>
+      )}
     </div>
   );
 }
