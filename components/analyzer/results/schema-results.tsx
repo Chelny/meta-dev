@@ -6,6 +6,7 @@ import {
   Check,
   CircleAlert,
   Copy,
+  ExternalLink,
 } from "lucide-react";
 import { AnalysisSection } from "@/components/analyzer/analysis-section";
 import type { PageAnalysis } from "@/types/analysis";
@@ -49,13 +50,17 @@ export function SchemaResults({ analysis }: { analysis: PageAnalysis }) {
             {types.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {types.map((type) => (
-                  <div
+                  <a
                     key={type}
-                    className="rounded-md border bg-muted/40 px-2.5 py-1.5 font-mono text-xs"
+                    href={getSchemaUrl(type)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-md border bg-muted/40 px-2.5 py-1.5 font-mono text-xs transition-colors hover:bg-muted"
                   >
-                    <span className="text-muted-foreground">@type</span>{" "}
+                    <span className="text-muted-foreground">@type</span>
                     {type}
-                  </div>
+                    <ExternalLink className="size-3 text-muted-foreground" />
+                  </a>
                 ))}
               </div>
             ) : (
@@ -80,12 +85,12 @@ export function SchemaResults({ analysis }: { analysis: PageAnalysis }) {
                 return (
                   <details
                     key={index}
-                    className="group overflow-hidden rounded-lg border bg-muted/20"
+                    className="group/schema overflow-hidden rounded-lg border bg-muted/20"
                   >
                     <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium">
                       <span>JSON-LD block {index + 1}</span>
 
-                      <span className="text-xs text-muted-foreground transition-transform group-open:rotate-90">
+                      <span className="text-xs text-muted-foreground transition-transform duration-200 group-open/schema:-rotate-90">
                         →
                       </span>
                     </summary>
@@ -118,7 +123,7 @@ export function SchemaResults({ analysis }: { analysis: PageAnalysis }) {
                             {block.entities.map((entity, entityIndex) => (
                               <details
                                 key={`${entityIndex}-${entity.types.join("-")}`}
-                                className="group rounded-lg border bg-background/40"
+                                className="group/entity rounded-lg border bg-background/40"
                               >
                                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3">
                                   <div className="flex flex-wrap gap-2">
@@ -132,7 +137,7 @@ export function SchemaResults({ analysis }: { analysis: PageAnalysis }) {
                                     ))}
                                   </div>
 
-                                  <span className="shrink-0 text-xs text-muted-foreground transition-transform group-open:rotate-90">
+                                  <span className="shrink-0 text-xs text-muted-foreground transition-transform duration-200 group-open/entity:-rotate-90">
                                     →
                                   </span>
                                 </summary>
@@ -230,4 +235,8 @@ function formatSchemaValue(value: unknown): string {
   }
 
   return JSON.stringify(value, null, 2);
+}
+
+function getSchemaUrl(type: string) {
+  return `https://schema.org/${encodeURIComponent(type)}`;
 }
