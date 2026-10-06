@@ -2,6 +2,7 @@
 
 import { AtSign, Share2 } from "lucide-react";
 import { AnalysisSection } from "@/components/analyzer/analysis-section";
+import { SocialPreview } from "@/components/analyzer/results/social-preview";
 import type { MetaValue, PageAnalysis } from "@/types/analysis";
 
 export function SocialResults({ analysis }: { analysis: PageAnalysis }) {
@@ -25,6 +26,13 @@ export function SocialResults({ analysis }: { analysis: PageAnalysis }) {
           value={analysis.openGraph.image}
           alt="Open Graph preview"
         />
+
+        <div className="border-t pt-4">
+          <SocialPreview
+            analysis={analysis}
+            platform="open-graph"
+          />
+        </div>
       </AnalysisSection>
 
       <AnalysisSection
@@ -44,6 +52,13 @@ export function SocialResults({ analysis }: { analysis: PageAnalysis }) {
           value={analysis.twitter.image}
           alt="Twitter Card preview"
         />
+
+        <div className="border-t pt-4">
+          <SocialPreview
+            analysis={analysis}
+            platform="twitter"
+          />
+        </div>
       </AnalysisSection>
     </>
   );
