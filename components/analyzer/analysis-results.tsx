@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Download } from "lucide-react";
 import { SchemaResults } from "@/components/analyzer/results/schema-results";
 import { SeoResults } from "@/components/analyzer/results/seo-results";
 import { SocialResults } from "@/components/analyzer/results/social-results";
@@ -41,8 +41,17 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
               </p>
             </div>
 
-            <div className="shrink-0 rounded-md border px-2.5 py-1 text-xs font-medium">
-              HTTP {analysis.technical.status}
+            <div className="shrink-0 flex flex-row items-center gap-2 rounded-md border px-2.5 py-2 text-xs font-medium">
+              <div>HTTP {analysis.technical.status}</div>
+
+              <button
+                type="button"
+                onClick={() => exportAnalysis(analysis)}
+                className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium bg-black/10 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <Download className="size-3.5" />
+                Export JSON
+              </button>
             </div>
           </div>
 
@@ -137,4 +146,20 @@ function formatScoreRating(
     case "poor":
       return "Poor";
   }
+}
+
+function exportAnalysis(analysis: PageAnalysis) {
+  const json = JSON.stringify(analysis, null, 2);
+  const blob = new Blob([json], {
+    type: "application/json",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "meta-dev-analysis.json";
+  link.click();
+
+  URL.revokeObjectURL(url);
 }
