@@ -2,6 +2,7 @@
 
 import { Search } from "lucide-react";
 import { AnalysisSection } from "@/components/analyzer/analysis-section";
+import { SeoPreview } from "@/components/analyzer/results/seo-preview";
 import type { PageAnalysis } from "@/types/analysis";
 
 export function SeoResults({ analysis }: { analysis: PageAnalysis }) {
@@ -16,6 +17,10 @@ export function SeoResults({ analysis }: { analysis: PageAnalysis }) {
       <MetaRow label="Canonical" value={analysis.seo.canonical} />
       <MetaRow label="Robots" value={analysis.seo.robots} />
       <MetaRow label="Language" value={analysis.seo.language} />
+
+      <div className="border-t pt-4">
+        <SeoPreview analysis={analysis} />
+      </div>
     </AnalysisSection>
   );
 }
