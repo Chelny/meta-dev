@@ -30,6 +30,14 @@ export function analyzeHtml(
   const language = $("html")
     .attr("lang");
 
+  const faviconHref = $('link[rel~="icon"]')
+    .first()
+    .attr("href");
+
+  const favicon = faviconHref
+    ? new URL(faviconHref, url).toString()
+    : null;
+
   const openGraph = {
     title: $('meta[property="og:title"]').attr("content"),
     description: $('meta[property="og:description"]').attr("content"),
@@ -112,7 +120,10 @@ export function analyzeHtml(
       blocks: schemaBlocks,
     },
 
-    technical,
+    technical: {
+      ...technical,
+      favicon,
+    },
 
     suggestions: [],
   };

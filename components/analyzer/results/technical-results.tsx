@@ -30,6 +30,12 @@ export function TechnicalResults({
       />
 
       <TechnicalRow
+        label="Favicon"
+        value={technical.favicon}
+        status={Boolean(technical.favicon)}
+      />
+
+      <TechnicalRow
         label="Content type"
         value={technical.contentType}
         status={Boolean(technical.contentType)}

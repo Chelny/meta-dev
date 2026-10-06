@@ -42,6 +42,7 @@ export type PageAnalysis = {
     contentType: string | null;
     contentLength: string | null;
     finalUrl: string;
+    favicon: string | null;
   };
 
   suggestions: Suggestion[];
