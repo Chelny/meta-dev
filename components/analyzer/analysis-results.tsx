@@ -1,6 +1,7 @@
 "use client";
 
-import { CheckCircle2, Download } from "lucide-react";
+import { useState } from "react";
+import { Check, CheckCircle2, Download, Share2 } from "lucide-react";
 import { SchemaResults } from "@/components/analyzer/results/schema-results";
 import { SeoResults } from "@/components/analyzer/results/seo-results";
 import { SocialResults } from "@/components/analyzer/results/social-results";
@@ -21,6 +22,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
   const issues = validateAnalysis(analysis);
   const score = calculateScore(analysis);
   const rating = getScoreRating(score.overall);
+  const [shared, setShared] = useState(false);
 
   return (
     <div className="mt-10 space-y-4">
@@ -47,10 +49,28 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
               <button
                 type="button"
                 onClick={() => exportAnalysis(analysis)}
-                className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium bg-black/10 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground hover:cursor-pointer"
               >
                 <Download className="size-3.5" />
                 Export JSON
+              </button>
+
+              <button
+                type="button"
+                onClick={() => void shareAnalysis(analysis.url, setShared)}
+                className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground hover:cursor-pointer"
+              >
+                {shared ? (
+                  <>
+                    <Check className="size-3.5" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="size-3.5" />
+                    Share
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -162,4 +182,19 @@ function exportAnalysis(analysis: PageAnalysis) {
   link.click();
 
   URL.revokeObjectURL(url);
+}
+
+async function shareAnalysis(
+  url: string,
+  setShared: (value: boolean) => void,
+) {
+  const shareUrl = `${window.location.origin}/analyze?url=${encodeURIComponent(url)}`;
+
+  await navigator.clipboard.writeText(shareUrl);
+
+  setShared(true);
+
+  window.setTimeout(() => {
+    setShared(false);
+  }, 1500);
 }
