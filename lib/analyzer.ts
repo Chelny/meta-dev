@@ -186,6 +186,7 @@ function extractSchemaProperties(
       if (!key.startsWith("@")) {
         properties.set(key, {
           name: key,
+          value: propertyValue,
           exists: propertyValue !== null && propertyValue !== undefined,
         });
       }
@@ -222,6 +223,7 @@ function extractSchemaEntities(schema: unknown): SchemaEntity[] {
           .filter(([key]) => !key.startsWith("@"))
           .map(([name, propertyValue]) => ({
             name,
+            value: propertyValue,
             exists:
               propertyValue !== null &&
               propertyValue !== undefined,

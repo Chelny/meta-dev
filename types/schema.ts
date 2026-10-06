@@ -1,5 +1,6 @@
 export type SchemaProperty = {
   name: string;
+  value: unknown;
   exists: boolean;
 };
 

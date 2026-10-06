@@ -116,34 +116,46 @@ export function SchemaResults({ analysis }: { analysis: PageAnalysis }) {
                         {block.entities.length > 0 ? (
                           <div className="space-y-3">
                             {block.entities.map((entity, entityIndex) => (
-                              <div
+                              <details
                                 key={`${entityIndex}-${entity.types.join("-")}`}
-                                className="rounded-lg border bg-background/40 p-3"
+                                className="group rounded-lg border bg-background/40"
                               >
-                                <div className="flex flex-wrap gap-2">
-                                  {entity.types.map((type) => (
-                                    <span
-                                      key={type}
-                                      className="rounded-md border bg-muted/40 px-2.5 py-1.5 font-mono text-xs"
-                                    >
-                                      {type}
-                                    </span>
-                                  ))}
-                                </div>
-
-                                {entity.properties.length > 0 && (
-                                  <div className="mt-3 flex flex-wrap gap-2">
-                                    {entity.properties.map((property) => (
+                                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3">
+                                  <div className="flex flex-wrap gap-2">
+                                    {entity.types.map((type) => (
                                       <span
-                                        key={property.name}
-                                        className="rounded-md border bg-muted/20 px-2 py-1 font-mono text-xs text-muted-foreground"
+                                        key={type}
+                                        className="rounded-md border bg-muted/40 px-2.5 py-1.5 font-mono text-xs"
                                       >
-                                        {property.name}
+                                        {type}
                                       </span>
                                     ))}
                                   </div>
+
+                                  <span className="shrink-0 text-xs text-muted-foreground transition-transform group-open:rotate-90">
+                                    →
+                                  </span>
+                                </summary>
+
+                                {entity.properties.length > 0 && (
+                                  <div className="space-y-2 border-t p-3">
+                                    {entity.properties.map((property) => (
+                                      <div
+                                        key={property.name}
+                                        className="grid gap-1 rounded-md border bg-muted/20 px-3 py-2 sm:grid-cols-[140px_1fr]"
+                                      >
+                                        <span className="font-mono text-xs font-medium">
+                                          {property.name}
+                                        </span>
+
+                                        <span className="break-all font-mono text-xs text-muted-foreground">
+                                          {formatSchemaValue(property.value)}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
                                 )}
-                              </div>
+                              </details>
                             ))}
                           </div>
                         ) : (
@@ -210,4 +222,12 @@ function CopyButton({ value }: { value: string }) {
       )}
     </button>
   );
+}
+
+function formatSchemaValue(value: unknown): string {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  return JSON.stringify(value, null, 2);
 }
