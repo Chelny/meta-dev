@@ -1,0 +1,158 @@
+"use client";
+
+import { Braces, CircleAlert } from "lucide-react";
+import { AnalysisSection } from "@/components/analyzer/analysis-section";
+import type { PageAnalysis } from "@/types/analysis";
+
+export function SchemaResults({ analysis }: { analysis: PageAnalysis }) {
+  const { types, blocks } = analysis.schema;
+
+  return (
+    <AnalysisSection
+      icon={Braces}
+      title="SCHEMA.ORG"
+      description="Structured data found in JSON-LD"
+    >
+      {blocks.length === 0 ? (
+        <div className="flex items-center gap-2 rounded-lg border border-dashed p-4">
+          <CircleAlert className="size-4 text-amber-500" />
+
+          <div>
+            <p className="text-sm font-medium">
+              No structured data found
+            </p>
+
+            <p className="mt-1 text-xs text-muted-foreground">
+              No JSON-LD Schema.org data was detected on this page.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-5">
+          <div>
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-xs font-medium tracking-wide text-muted-foreground">
+                DETECTED TYPES
+              </p>
+
+              <span className="text-xs text-muted-foreground">
+                {types.length} {types.length === 1 ? "type" : "types"}
+              </span>
+            </div>
+
+            {types.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {types.map((type) => (
+                  <div
+                    key={type}
+                    className="rounded-md border bg-muted/40 px-2.5 py-1.5 font-mono text-xs"
+                  >
+                    <span className="text-muted-foreground">@type</span>{" "}
+                    {type}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                JSON-LD found, but no @type was detected.
+              </p>
+            )}
+          </div>
+
+          <div>
+            <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground">
+              JSON-LD
+            </p>
+
+            <div className="space-y-3">
+              {blocks.map((block, index) => (
+                <details
+                  key={index}
+                  className="group overflow-hidden rounded-lg border bg-muted/20"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium">
+                    <span>JSON-LD block {index + 1}</span>
+
+                    <span className="text-xs text-muted-foreground transition-transform group-open:rotate-90">
+                      →
+                    </span>
+                  </summary>
+
+                  <div className="space-y-4 border-t p-4">
+                    <div className="flex flex-wrap gap-2">
+                      {block.types.map((type) => (
+                        <span
+                          key={type}
+                          className="rounded-md border bg-muted/40 px-2.5 py-1.5 font-mono text-xs"
+                        >
+                          {type}
+                        </span>
+                      ))}
+
+                      {block.context && (
+                        <span className="rounded-md border bg-muted/40 px-2.5 py-1.5 font-mono text-xs text-muted-foreground">
+                          {block.context}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground">
+                        ENTITIES
+                      </p>
+
+                      {block.entities.length > 0 ? (
+                        <div className="space-y-3">
+                          {block.entities.map((entity, entityIndex) => (
+                            <div
+                              key={`${entityIndex}-${entity.types.join("-")}`}
+                              className="rounded-lg border bg-background/40 p-3"
+                            >
+                              <div className="flex flex-wrap gap-2">
+                                {entity.types.map((type) => (
+                                  <span
+                                    key={type}
+                                    className="rounded-md border bg-muted/40 px-2.5 py-1.5 font-mono text-xs"
+                                  >
+                                    {type}
+                                  </span>
+                                ))}
+                              </div>
+
+                              {entity.properties.length > 0 && (
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  {entity.properties.map((property) => (
+                                    <span
+                                      key={property.name}
+                                      className="rounded-md border bg-muted/20 px-2 py-1 font-mono text-xs text-muted-foreground"
+                                    >
+                                      {property.name}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          No Schema.org entities detected.
+                        </p>
+                      )}
+                    </div>
+
+                    <pre className="overflow-x-auto rounded-lg bg-muted/30 p-4 text-left font-mono text-xs leading-6 text-muted-foreground">
+                      {typeof block.raw === "string"
+                        ? block.raw
+                        : JSON.stringify(block.raw, null, 2)}
+                    </pre>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </AnalysisSection>
+  );
+}

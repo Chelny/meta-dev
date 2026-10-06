@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
+const allowedDevOrigin = process.env.ALLOWED_DEV_ORIGIN;
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  allowedDevOrigins: allowedDevOrigin ? [allowedDevOrigin] : [],
 };
 
 export default nextConfig;
