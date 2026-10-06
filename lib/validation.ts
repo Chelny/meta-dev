@@ -291,6 +291,12 @@ function validateSchema(
 ) {
   for (const [index, block] of analysis.schema.blocks.entries()) {
     if (!block.isValid) {
+      issues.push({
+        id: `invalid-schema-${index}`,
+        severity: "error",
+        message: `JSON-LD block ${index + 1} contains invalid JSON.`,
+      });
+
       continue;
     }
 
