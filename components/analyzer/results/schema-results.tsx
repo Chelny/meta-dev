@@ -114,8 +114,8 @@ export function SchemaResults({ analysis }: { analysis: PageAnalysis }) {
                       </div>
 
                       <div>
-                        <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground">
-                          ENTITIES
+                        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          Entities
                         </p>
 
                         {block.entities.length > 0 ? (
@@ -154,7 +154,7 @@ export function SchemaResults({ analysis }: { analysis: PageAnalysis }) {
                                         </span>
 
                                         <span className="break-all font-mono text-xs text-muted-foreground">
-                                          {formatSchemaValue(property.value)}
+                                          <SchemaPropertyValue value={property.value} />
                                         </span>
                                       </div>
                                     ))}
@@ -229,12 +229,57 @@ function CopyButton({ value }: { value: string }) {
   );
 }
 
-function formatSchemaValue(value: unknown): string {
+function SchemaPropertyValue({ value }: { value: unknown }) {
   if (typeof value === "string") {
-    return value;
+    if (isUrl(value)) {
+      return (
+        <a
+          href={value}
+          target="_blank"
+          rel="noreferrer"
+          className="break-all text-foreground underline decoration-muted-foreground/40 underline-offset-2 transition-colors hover:decoration-foreground"
+        >
+          {value}
+        </a>
+      );
+    }
+
+    return <span>{value}</span>;
   }
 
-  return JSON.stringify(value, null, 2);
+  if (Array.isArray(value)) {
+    return (
+      <div className="space-y-1">
+        {value.map((item, index) => (
+          <div
+            key={index}
+            className="rounded-md border bg-background/40 px-2 py-1"
+          >
+            <SchemaPropertyValue value={item} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (value && typeof value === "object") {
+    return (
+      <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all text-xs">
+        {JSON.stringify(value, null, 2)}
+      </pre>
+    );
+  }
+
+  return <span>{String(value)}</span>;
+}
+
+function isUrl(value: string) {
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function getSchemaUrl(type: string) {
